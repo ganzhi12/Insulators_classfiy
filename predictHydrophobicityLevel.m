@@ -57,6 +57,84 @@ function predLabel = predictHydrophobicityLevel(imagePath)
     % 预测等级
     predLabel = char(predict(svmModel, features));
     
-    % 显示结果（仅显示等级）
+    % 创建等级说明映射
+    levelDescription = containers.Map({
+        'HC1', 'HC2', 'HC3', 'HC4', 'HC5', 'HC6'
+    }, {
+        '完全憎水，水珠清晰', ...
+        '憎水，水珠较清晰', ...
+        '弱憎水，水珠开始融合', ...
+        '中间状态，部分表面湿润', ...
+        '弱亲水，大面积湿润', ...
+        '亲水，完全湿润'
+    });
+    
+    % 获取当前预测等级的说明
+    if levelDescription.isKey(predLabel)
+        description = levelDescription(predLabel);
+    else
+        description = '未知等级';
+    end
+    
+    % 定义不同等级的颜色
+    levelColors = containers.Map({
+        'HC1', 'HC2', 'HC3', 'HC4', 'HC5', 'HC6'
+    }, {
+        [0, 0.8, 0],     % 绿色
+        [0.5, 0.8, 0],   % 黄绿色
+        [1, 1, 0],       % 黄色
+        [1, 0.65, 0],    % 橙色
+        [1, 0, 0],       % 红色
+        [0.5, 0, 0]      % 深红色
+    });
+    
+    % 获取当前预测等级的颜色
+    if levelColors.isKey(predLabel)
+        labelColor = levelColors(predLabel);
+    else
+        labelColor = [0, 0, 0]; % 黑色（未知等级）
+    end
+    
+    % 显示原图和结果图
+    figure('Position', [100, 100, 1200, 500]);
+    
+    % 显示原图
+    subplot(1, 2, 1);
+    imshow(img);
+    title('原始图像');
+    axis on;
+    
+    % 创建结果图像
+    resultImg = img;
+    
+    % 在结果图像上添加预测信息
+    [height, width, ~] = size(resultImg);
+    textSize = max(12, round(min(height, width) / 40));
+    
+    % 在图像上绘制标签背景
+    textPosition = [10, 10];
+    textWidth = max(textSize * length(['预测等级: ' predLabel]) * 0.6, textSize * length(['等级说明: ' description]) * 0.6);
+    textHeight = textSize * 4;
+    
+    % 创建一个半透明矩形作为文本背景
+    rectangle('Position', [textPosition(1)-5, textPosition(2)-5, textWidth+10, textHeight+10], ...
+              'FaceColor', [1 1 1 0.7], 'EdgeColor', 'none');
+    
+    % 添加预测等级文本
+    text(textPosition(1), textPosition(2) + textSize, ['预测等级: ' predLabel], ...
+         'Color', labelColor, 'FontSize', textSize, 'FontWeight', 'bold');
+    
+    % 添加等级说明文本
+    text(textPosition(1), textPosition(2) + textSize * 2.5, ['等级说明: ' description], ...
+         'Color', [0 0 0], 'FontSize', textSize-2);
+    
+    % 显示结果图像
+    subplot(1, 2, 2);
+    imshow(resultImg);
+    title(['预测结果: ' predLabel]);
+    axis on;
+    
+    % 打印预测结果
     fprintf('预测憎水性等级: %s\n', predLabel);
+    fprintf('等级说明: %s\n', description);
 end
