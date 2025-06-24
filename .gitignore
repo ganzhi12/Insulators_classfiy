@@ -1,4 +1,5 @@
 insulator_model.mat
 
-test/*
-train/*
+
+test/
+train/
