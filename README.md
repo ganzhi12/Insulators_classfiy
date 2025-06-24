@@ -10,3 +10,5 @@
 ![a4结果图](https://github.com/user-attachments/assets/39134915-5ae9-4be2-b98b-8a730ea0c1dd)
 ### 混淆矩阵
 ![混淆矩阵图](https://github.com/user-attachments/assets/d6e36fcc-7f23-4560-8a24-4473c8f384e5)
+### 单张照片测试结果图
+![结果预测图](https://github.com/user-attachments/assets/dba25c4f-964d-4643-bda2-6121ce723968)
