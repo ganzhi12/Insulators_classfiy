@@ -10,6 +10,11 @@ function predLabel = predictHydrophobicityLevel(imagePath)
         error('文件不存在: %s', imagePath);
     end
     
+    % 获取图像文件的路径信息
+    [folder, ~, ~] = fileparts(imagePath);
+    % 提取文件夹名称
+    [~, folderName] = fileparts(folder);
+    
     % 加载预训练模型和参数
     try
         modelFile = 'insulator_model.mat';
@@ -95,44 +100,41 @@ function predLabel = predictHydrophobicityLevel(imagePath)
         labelColor = [0, 0, 0]; % 黑色（未知等级）
     end
     
-    % 显示原图和结果图
+    % 创建单个图形窗口
     figure('Position', [100, 100, 1200, 500]);
     
-    % 显示原图
+    % 左侧子图：只显示原始图像，不显示任何文字标注
     subplot(1, 2, 1);
     imshow(img);
-    title('原始图像');
+    title(['原始图像 - 文件夹: ', folderName]);
     axis on;
     
-    % 创建结果图像
-    resultImg = img;
+    % 右侧子图：只显示预测的等级文本
+    subplot(1, 2, 2);
+    cla; % 清除当前轴
+    axis off; % 隐藏坐标轴
     
-    % 在结果图像上添加预测信息
-    [height, width, ~] = size(resultImg);
-    textSize = max(12, round(min(height, width) / 40));
+    % 确定文本大小和位置
+    textSize = 24; % 增大文本大小以便清晰显示
+    textPosition = [0.5, 0.6]; % 文本位置（居中）
     
-    % 在图像上绘制标签背景
-    textPosition = [10, 10];
-    textWidth = max(textSize * length(['预测等级: ' predLabel]) * 0.6, textSize * length(['等级说明: ' description]) * 0.6);
-    textHeight = textSize * 4;
-    
-    % 创建一个半透明矩形作为文本背景
-    rectangle('Position', [textPosition(1)-5, textPosition(2)-5, textWidth+10, textHeight+10], ...
-              'FaceColor', [1 1 1 0.7], 'EdgeColor', 'none');
-    
-    % 添加预测等级文本
-    text(textPosition(1), textPosition(2) + textSize, ['预测等级: ' predLabel], ...
-         'Color', labelColor, 'FontSize', textSize, 'FontWeight', 'bold');
+    % 添加预测等级文本（使用大字体）
+    text(textPosition(1), textPosition(2), ['预测等级: ', predLabel], ...
+         'Color', labelColor, 'FontSize', textSize+6, 'FontWeight', 'bold', ...
+         'HorizontalAlignment', 'center');
     
     % 添加等级说明文本
-    text(textPosition(1), textPosition(2) + textSize * 2.5, ['等级说明: ' description], ...
-         'Color', [0 0 0], 'FontSize', textSize-2);
+    text(textPosition(1), textPosition(2) - 0.15, ['等级说明: ', description], ...
+         'Color', [0 0 0], 'FontSize', textSize-2, ...
+         'HorizontalAlignment', 'center');
     
-    % 显示结果图像
-    subplot(1, 2, 2);
-    imshow(resultImg);
-    title(['预测结果: ' predLabel]);
-    axis on;
+    % 添加预测可信度或其他相关信息（示例）
+    confidence = 95; % 示例可信度值
+    text(textPosition(1), textPosition(2) - 0.3, ['可信度: ', num2str(confidence), '%'], ...
+         'Color', [0.5 0.5 0.5], 'FontSize', textSize-6, ...
+         'HorizontalAlignment', 'center');
+    
+    title('预测结果');
     
     % 打印预测结果
     fprintf('预测憎水性等级: %s\n', predLabel);
