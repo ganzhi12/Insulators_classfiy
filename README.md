@@ -11,4 +11,5 @@
 ### 混淆矩阵
 ![混淆矩阵图](https://github.com/user-attachments/assets/d6e36fcc-7f23-4560-8a24-4473c8f384e5)
 ### 单张照片测试结果图
-![结果预测图](https://github.com/user-attachments/assets/dba25c4f-964d-4643-bda2-6121ce723968)
+![HC1预测结果](https://github.com/user-attachments/assets/cc4fe8c2-f96f-44ff-9916-c2582f9116f4)
+![HC4预测结果](https://github.com/user-attachments/assets/b8af3afd-3c49-4790-90a5-09664e049cf4)
